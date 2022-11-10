@@ -31,15 +31,12 @@ jobs:
 
       - name: Lint
         run: |
-          poetry shell
-          flake8 .
+          poetry run flake8 .
 
       - name: Unit tests
         run: |
-          poetry shell
-          coverage run --source=bpcalc -m pytest
+          poetry run coverage run --source=bpcalc -m pytest
 
       - name: Code coverage
         run: |
-          poetry shell
-          coverage report --fail-under=80
+          poetry run coverage report --fail-under=80
