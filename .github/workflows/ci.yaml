@@ -1,0 +1,37 @@
+---
+name: Continuous Integration
+
+on:
+  workflow_call:
+  pull_request:
+    branches: ['main']
+    paths-ignore:
+      - '**/*.md'
+    types:
+      - synchronize
+      - opened
+
+jobs:
+  ci:
+    name: Continous Integration
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Lint
+        run: flake8 .
+
+      - name: Unit tests
+        run: coverage run --source=bpcalc -m pytest
+
+      - name: Code coverage
+        run: coverage report --fail-under=80
