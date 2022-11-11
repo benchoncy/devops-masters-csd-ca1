@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.2.0 python3 -
+          curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.2.2 python3 -
           poetry install
           poetry run pip list
 
