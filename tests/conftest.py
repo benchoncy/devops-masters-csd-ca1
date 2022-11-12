@@ -1,5 +1,4 @@
 import pytest
-from splinter.driver.flaskclient import FlaskClient
 from bpcalc import app
 
 

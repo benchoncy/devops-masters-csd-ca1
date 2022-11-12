@@ -1,4 +1,3 @@
-import pytest
 from bpcalc import validate_values, get_bp_category, BPCategory
 
 

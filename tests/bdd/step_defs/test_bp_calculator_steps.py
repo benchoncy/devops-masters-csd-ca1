@@ -1,9 +1,8 @@
-import pytest
 from pytest_bdd import scenario, given, when, then, parsers
-from bpcalc import BPCategory
 
 
-@scenario('../features/bp_calculator.feature', 'Calculate blood preasure category')
+@scenario('../features/bp_calculator.feature',
+          'Calculate blood preasure category')
 def test_calc():
     pass
 
