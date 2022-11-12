@@ -33,7 +33,7 @@ jobs:
         run: |
           poetry run flake8 .
 
-      - name: Unit tests
+      - name: Unit & BDD tests
         run: |
           poetry run coverage run --source=bpcalc -m pytest
 

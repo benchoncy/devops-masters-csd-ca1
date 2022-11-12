@@ -42,7 +42,7 @@ def index():
             systolic = float(request.form.get('bpsystolic'))
             diastolic = float(request.form.get('bpdiastolic'))
             error = validate_values(systolic, diastolic)
-        except ValueError:
+        except (ValueError, TypeError):
             error = ["Valid values must be entered"]
         if not error:
             response = get_bp_category(systolic, diastolic)
