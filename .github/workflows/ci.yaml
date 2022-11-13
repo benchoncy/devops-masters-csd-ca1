@@ -37,22 +37,23 @@ jobs:
         with:
           load: true
           target: development
+          tags: ${ env.IMAGE_NAME }:test
 
       - name: Lint
         run: |
-          docker run -it ${ steps.test_build.outputs.imageid } \
+          docker run -it ${ env.IMAGE_NAME }:test \
           --mount src="$(pwd)",target=/app,type=bind \
           poetry run flake8 .
 
       - name: Unit & BDD tests
         run: |
-          docker run -it ${ steps.test_build.outputs.imageid } \
+          docker run -it ${ env.IMAGE_NAME }:test \
           --mount src="$(pwd)",target=/app,type=bind \
           coverage run --source=bpcalc -m pytest
       
       - name: Test coverage
         run: |
-          docker run -it ${ steps.test_build.outputs.imageid } \
+          docker run -it ${ env.IMAGE_NAME }:test \
           --mount src="$(pwd)",target=/app,type=bind \
           coverage report --fail-under=80
 
