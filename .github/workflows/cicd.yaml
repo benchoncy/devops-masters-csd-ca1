@@ -40,7 +40,7 @@ jobs:
         run: poetry run flake8 .
       
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.8.0
+        uses: aquasecurity/trivy-action@0.8.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
