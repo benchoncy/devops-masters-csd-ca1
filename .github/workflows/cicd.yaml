@@ -1,0 +1,101 @@
+---
+name: Continuous Integration
+
+on:
+  workflow_call:
+  pull_request:
+    branches: ['main']
+    paths-ignore:
+      - '**/*.md'
+    types:
+      - synchronize
+      - opened
+
+env:
+  IMAGE_NAME: bpcalc
+  AWS_REGION: eu-west-1
+
+jobs:
+  ci:
+    name: Continous Integration
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Install poetry
+        run: pipx install poetry==1.2.2
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Lint
+        run: poetry run flake8 .
+      
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.8.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          security-checks: vuln,secret,config
+
+      - name: Unit tests
+        run: |
+          poetry run coverage run --source=bpcalc -m pytest tests/unit
+          poetry run coverage report --fail-under=50    
+      
+      - name: BDD tests
+        run: poetry run python -m pytest tests/bdd
+
+  cd:
+    name: Continous Deployment
+    runs-on: ubuntu-22.04
+    needs: ci
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Login to ECR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Get image metadata
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ secrets.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}},enable={{is_default_branch}}
+            type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}}
+            type=semver,pattern={{major}},enable={{is_default_branch}}
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,enable={{is_default_branch}}
+            type=ref,event=pr
+          flavor: |
+            latest=false
+    
+      - name: Build & Publish
+        id: build
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          context: .
+          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha

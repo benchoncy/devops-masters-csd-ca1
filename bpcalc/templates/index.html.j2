@@ -5,23 +5,32 @@
 <div class="row">
     <div class="col-md-4">
         <form method="post" id="form1">
-            <div class="text-danger"></div>
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                <div>
+                    <i class="bi-exclamation-triangle-fill me-2"></i> Error:
+                    <ul>
+                        {% for msg in error %}
+                        <li>{{ msg }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
             <div class="form-group">
                 <label for="bpsystolic" class="control-label">Systolic</label>
                 <input id="bpsystolic" name="bpsystolic" class="form-control"/>
-                <span class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="bpdiastolic" class="control-label">Diastolic</label>
                 <input id="bpdiastolic" name="bpdiastolic" class="form-control" />
-                <span class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
                 <input type="submit" value="Submit" class="btn btn-primary" />
             </div>
             {% if response %}
-            <div class="form-group">
-                {{ response }}
+            <div id="response" class="alert alert-primary mt-2" role="alert">
+                You have {{ response.value }} blood preasure.
             </div>
             {% endif %}
         </form>
