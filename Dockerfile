@@ -48,5 +48,7 @@ COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 COPY ./bpcalc /app/bpcalc
 WORKDIR /app
 
+USER app
+
 EXPOSE $PORT
 CMD ["gunicorn", "-w", "3", "bpcalc:app"]
