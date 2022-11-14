@@ -13,7 +13,6 @@ on:
 
 env:
   IMAGE_NAME: bpcalc
-  AWS_ACCOUNT: '598058097051'
   AWS_REGION: eu-west-1
 
 jobs:
@@ -71,7 +70,7 @@ jobs:
       - name: Login to ECR
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          registry: ${{ secrets.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -79,7 +78,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}
+          images: ${{ secrets.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}},enable={{is_default_branch}}
             type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}}
