@@ -12,10 +12,9 @@ on:
       - opened
 
 env:
-  IMAGE_NAME: 598058097051.dkr.ecr.eu-west-1.amazonaws.com/bpcalc
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+  IMAGE_NAME: bpcalc
+  AWS_ACCOUNT: '598058097051'
+  AWS_REGION: eu-west-1
 
 jobs:
   ci:
@@ -24,27 +23,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      
+      - name: Install poetry
+        run: pipx install poetry==1.2.2
 
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          cache: 'poetry'
 
       - name: Install dependencies
-        run: |
-          # Trivy
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.34.0
-          # Poetry
-          curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.2.2 python3 -
-          poetry install
+        run: poetry install
 
       - name: Lint
-        run: |
-          poetry run flake8 .
+        run: poetry run flake8 .
       
       - name: Scan for vulnerabilities, misconfiguration & secrets
-        run: |
-          trivy fs --security-checks vuln,config,secret .
+        uses: docker://aquasec/trivy:0.34.0
+        with: 
+          args: trivy fs --security-checks vuln,config,secret .
 
       - name: Unit tests
         run: |
@@ -52,12 +50,12 @@ jobs:
           poetry run coverage report --fail-under=50    
       
       - name: BDD tests
-        run: |
-          poetry run python -m pytest tests/bdd
+        run: poetry run python -m pytest tests/bdd
 
   cd:
     name: Continous Deployment
     runs-on: ubuntu-22.04
+    needs: ci
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -67,12 +65,19 @@ jobs:
       
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v2
+      
+      - name: Login to ECR
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Get image metadata
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ${{ env.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}
           tags: |
             type=semver,pattern={{version}},enable={{is_default_branch}}
             type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}}
@@ -83,7 +88,7 @@ jobs:
           flavor: |
             latest=false
     
-      - name: Build image
+      - name: Build & Publish
         id: build
         uses: docker/build-push-action@v3
         with:
@@ -91,3 +96,5 @@ jobs:
           context: .
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha
