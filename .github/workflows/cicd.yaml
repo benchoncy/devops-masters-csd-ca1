@@ -39,10 +39,12 @@ jobs:
       - name: Lint
         run: poetry run flake8 .
       
-      - name: Scan for vulnerabilities, misconfiguration & secrets
-        uses: docker://aquasec/trivy:0.34.0
-        with: 
-          args: trivy fs --security-checks vuln,config,secret .
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.8.0
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          security-checks: vuln,secret,config
 
       - name: Unit tests
         run: |
