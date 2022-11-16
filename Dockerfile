@@ -12,6 +12,7 @@ ENV VENV_PATH="/opt/pysetup/.venv"
 # prepend poetry and venv to path
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
+RUN adduser --system --no-create-home app
 
 # Build initial dependancies
 FROM base as builder
