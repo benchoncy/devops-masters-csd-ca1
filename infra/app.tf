@@ -11,6 +11,13 @@ resource "aws_apprunner_service" "bpcalc" {
     image_repository {
       image_identifier      = "${var.image}:${var.tag}"
       image_repository_type = "ECR"
+      image_configuration {
+        port = "8080"
+        runtime_environment_variables = {
+          ENV = "${terraform.workspace}"
+          VERSION = "${var.tag}"
+        }
+      }
     }
     auto_deployments_enabled = false
   }
