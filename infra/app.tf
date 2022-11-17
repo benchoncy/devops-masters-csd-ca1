@@ -1,8 +1,6 @@
 resource "aws_apprunner_service" "bpcalc" {
   service_name = "bpcalc-app-${terraform.workspace}"
-  depends_on = [
-    aws_iam_role_policy.build-policy
-  ]
+  depends_on = [time_sleep.wait]
 
   source_configuration {
     authentication_configuration {
