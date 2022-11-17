@@ -117,7 +117,7 @@ jobs:
             TAG=sha-$SHORT_SHA
           fi
           terraform init
-          terraform workspace new ${{ env.WORKSPACE }} | :
+          terraform workspace new ${{ env.WORKSPACE }} || true
           terraform workspace select ${{ env.WORKSPACE }}
           terraform plan \
           -var='image=${{ secrets.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}' \
