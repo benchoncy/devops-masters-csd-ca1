@@ -112,7 +112,7 @@ jobs:
       - name: Deploy Infrastructure
         run: |
           TAG=$WORKSPACE
-          if [[ $TAG = 'prod' ]] then
+          if [[ $TAG = 'prod' ]]; then
             SHORT_SHA=$(git rev-parse --short HEAD)
             TAG=sha-$SHORT_SHA
           fi
