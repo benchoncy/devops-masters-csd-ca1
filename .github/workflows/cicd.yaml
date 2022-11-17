@@ -121,7 +121,7 @@ jobs:
           terraform workspace select ${{ env.WORKSPACE }}
           terraform plan \
           -var='image=${{ secrets.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}' \
-          -var='tag=${TAG}' \
+          -var="tag=$TAG" \
           -var='region=${{ env.AWS_REGION }}' \
           -out=tfplan.json
           terraform apply tfplan.json
