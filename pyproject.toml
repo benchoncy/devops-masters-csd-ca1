@@ -9,6 +9,13 @@ readme = "README.md"
 python = "^3.10"
 Flask = "^2.2.2"
 gunicorn = "^20.1.0"
+matplotlib = "^3.6.2"
+opentelemetry-distro = "^0.35b0"
+opentelemetry-instrumentation-flask = "^0.35b0"
+requests = "^2.28.1"
+opentelemetry-exporter-otlp = "^1.14.0"
+opentelemetry-sdk-extension-aws = "^2.0.1"
+opentelemetry-propagator-aws-xray = "^1.0.1"
 
 
 [tool.poetry.group.dev.dependencies]

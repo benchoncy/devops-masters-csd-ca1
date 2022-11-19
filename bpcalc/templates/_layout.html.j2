@@ -35,8 +35,9 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2020 - BPCalculator
+        <div class="container d-flex justify-content-between">
+            <div>&copy; 2020 - BPCalculator</div>
+            <div>Environment: {{ env('ENV') }}, Version: {{ env('VERSION') }}</div>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>

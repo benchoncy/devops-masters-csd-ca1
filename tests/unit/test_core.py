@@ -1,18 +1,28 @@
-from bpcalc import validate_values, get_bp_category, BPCategory
+import pytest
+from bpcalc import validate_values, get_bp_category
+from bpcalc.bpenums import BPCategory, BPLimits
 
 
-def test_validate_values():
-    assert validate_values(100, 80) is None
-    assert validate_values(80, 100) is not None
-    assert validate_values(60, 50) is not None
-    assert validate_values(80, 110) is not None
-    assert validate_values(50, 150) is not None
+@pytest.mark.parametrize("systolic,diastolic,result", [
+    (BPLimits.YMAX, BPLimits.XMAX, type(None)),
+    (BPLimits.YMIN, BPLimits.XMIN, type(None)),
+    (BPLimits.YMAX + 1, BPLimits.XMAX, list),
+    (BPLimits.YMAX, BPLimits.XMAX + 1, list),
+    (BPLimits.YMIN - 1, BPLimits.XMIN, list),
+    (BPLimits.YMIN, BPLimits.XMIN - 1, list),
+    (BPLimits.YMIN, BPLimits.XMAX, list)
+])
+def test_validate_values(systolic, diastolic, result):
+    assert type(validate_values(systolic, diastolic)) is result
 
 
-def test_get_bp_category():
-    assert get_bp_category(80, 50) == BPCategory.LOW
-    assert get_bp_category(110, 70) == BPCategory.IDEAL
-    assert get_bp_category(130, 80) == BPCategory.PRE_HIGH
-    assert get_bp_category(160, 90) == BPCategory.HIGH
-    assert get_bp_category(90, 60) == BPCategory.IDEAL
-    assert get_bp_category(90, 50) == BPCategory.IDEAL
+@pytest.mark.parametrize("systolic,diastolic,result", [
+    (BPLimits.YMIN, BPLimits.XMIN, BPCategory.LOW),
+    (BPLimits.IDEAL_YSTART, BPLimits.IDEAL_XSTART, BPCategory.IDEAL),
+    (BPLimits.PRE_HIGH_YSTART, BPLimits.PRE_HIGH_XSTART, BPCategory.PRE_HIGH),
+    (BPLimits.HIGH_YSTART, BPLimits.HIGH_XSTART, BPCategory.HIGH),
+    (BPLimits.YMIN, BPLimits.IDEAL_XSTART, BPCategory.IDEAL),
+    (BPLimits.IDEAL_YSTART, BPLimits.XMIN, BPCategory.IDEAL)
+])
+def test_get_bp_category(systolic, diastolic, result):
+    assert get_bp_category(systolic, diastolic) == result
