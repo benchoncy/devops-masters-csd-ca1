@@ -11,7 +11,7 @@ resource "aws_iam_role" "bpcalc-buildrole" {
   name = "bpcalc-buildrole-${terraform.workspace}"
   path = "/service/"
   assume_role_policy = data.aws_iam_policy_document.bpcalc-build-role-assume-policy.json
-  managed_policy_arns = [ "arn:aws:iam::aws:policy/AWSAppRunnerServicePolicyForECRAccess" ]
+  managed_policy_arns = [ "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess" ]
 
   tags = {
     Name = "bpcalc-buildrole-${terraform.workspace}"
