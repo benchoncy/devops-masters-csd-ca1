@@ -87,7 +87,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}},enable={{is_default_branch}}
             type=semver,pattern={{major}},enable={{is_default_branch}}
             type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,enable={{is_default_branch}}
+            type=sha
             type=ref,event=pr
           flavor: |
             latest=false
@@ -111,11 +111,8 @@ jobs:
       
       - name: Deploy Infrastructure
         run: |
-          TAG=$WORKSPACE
-          if [[ $TAG = 'prod' ]]; then
-            SHORT_SHA=$(git rev-parse --short HEAD)
-            TAG=sha-$SHORT_SHA
-          fi
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TAG=sha-$SHORT_SHA
           terraform init
           terraform workspace new ${{ env.WORKSPACE }} || true
           terraform workspace select ${{ env.WORKSPACE }}

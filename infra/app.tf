@@ -19,7 +19,11 @@ resource "aws_apprunner_service" "bpcalc" {
         }
       }
     }
-    auto_deployments_enabled = false
+    auto_deployments_enabled = true
+  }
+
+  instance_configuration {
+    instance_role_arn = aws_iam_role.bpcalc-instancerole.arn
   }
 
   observability_configuration {
