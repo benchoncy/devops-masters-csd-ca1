@@ -30,10 +30,13 @@
             </div>
             {% if response %}
             <div id="response" class="alert alert-primary mt-2" role="alert">
-                You have {{ response.value }} blood preasure.
+                You have {{ response }} blood pressure.
             </div>
             {% endif %}
         </form>
+    </div>
+    <div class="col-md-8">
+        <div class="float-end"><img class="border border-secondary" src="/plot{% if sd_values %}/{{ sd_values[0] }}/{{ sd_values[1] }}{% endif %}" alt="my plot"></div>
     </div>
 </div>
 {% endblock %}

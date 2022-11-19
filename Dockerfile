@@ -38,12 +38,14 @@ COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 RUN poetry install
 WORKDIR /app
 
-EXPOSE $PORT
-CMD ["gunicorn", "-w", "1", "bpcalc:app"]
+EXPOSE 5000
+CMD [ "flask", "--app", "bpcalc", "--debug", "run", "--host", "0.0.0.0" ]
 
 
 # Production setup
 FROM base as production
+
+ENV OTEL_RESOURCE_ATTRIBUTES='service.name=bpcalc'
 
 COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 COPY ./bpcalc /app/bpcalc
@@ -52,4 +54,4 @@ WORKDIR /app
 USER app
 
 EXPOSE $PORT
-CMD ["gunicorn", "-w", "3", "bpcalc:app"]
+CMD [ "opentelemetry-instrument", "gunicorn", "-w", "3", "bpcalc:app" ]

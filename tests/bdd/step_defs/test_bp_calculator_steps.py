@@ -13,7 +13,7 @@ def goto_calc(browser):
 
 
 @when(parsers.parse("systolic is {systolic:d} and diastolic is {diastolic:d}"))
-def bp_100_80(browser, systolic, diastolic):
+def bp_fill_values(browser, systolic, diastolic):
     browser.fill('bpsystolic', str(systolic))
     browser.fill('bpdiastolic', str(diastolic))
 
@@ -24,5 +24,5 @@ def submit_form(browser):
 
 
 @then(parsers.parse("blood preasure category is {bp_category}"))
-def bp_pre_high(browser, bp_category):
-    assert bp_category in browser.find_by_id('response').value
+def bp_check(browser, bp_category):
+    assert bp_category in browser.find_by_id('response').html
