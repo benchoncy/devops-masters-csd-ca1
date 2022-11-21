@@ -1,6 +1,5 @@
-import re
 from playwright.sync_api import Page, expect
-from pytest_bdd import scenario, given, when, then, parsers
+from pytest_bdd import scenario, when, then, parsers
 
 
 @scenario('../features/navigation.feature',
