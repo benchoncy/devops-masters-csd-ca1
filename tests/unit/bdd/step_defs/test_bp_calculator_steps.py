@@ -14,8 +14,7 @@ def goto_calc(client):
 
 
 @when(parsers.parse("systolic is {systolic:d} and diastolic is {diastolic:d}"),
-    target_fixture="response"
-)
+      target_fixture="response")
 def bp_fill_values(client, systolic, diastolic):
     response = client.post("/", data={
         "bpsystolic": systolic,
