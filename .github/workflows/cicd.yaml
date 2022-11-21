@@ -123,7 +123,9 @@ jobs:
           -var='region=${{ env.AWS_REGION }}' \
           -out=tfplan.json
           terraform apply tfplan.json
-          echo "URL=$(terraform output -raw url)" >> $GITHUB_OUTPUT
+          URL=$(terraform output -raw url)
+          echo $URL
+          echo "url=$URL" >> $GITHUB_OUTPUT
         working-directory: ./infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
