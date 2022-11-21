@@ -60,5 +60,5 @@ resource "aws_apprunner_observability_configuration" "bpcalc" {
 }
 
 output "url" {
-  value = aws_apprunner_service.bpcalc.service_url
+  value = "https://${aws_apprunner_service.bpcalc.service_url}"
 }
