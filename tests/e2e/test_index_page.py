@@ -15,14 +15,6 @@ def test_calc_incorrect_values():
     pass
 
 
-@given("a blood preasure calculator")
-def goto_calc(page: Page, base_url):
-    page.goto(base_url)
-    expect(page).to_have_title("BPCalculator")
-    form = page.locator("#bpform")
-    expect(form).to_have_attribute("method", "post")
-
-
 @when(parsers.parse("systolic is {systolic} and diastolic is {diastolic}"))
 def bp_fill_values(page: Page, systolic, diastolic):
     page.locator("input[name=bpsystolic]").fill(str(systolic))
