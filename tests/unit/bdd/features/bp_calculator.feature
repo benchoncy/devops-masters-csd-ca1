@@ -5,7 +5,6 @@ Feature: Blood Preasure Calculator
     Given a blood preasure calculator
 
     When systolic is <systolic> and diastolic is <diastolic>
-    And form is submitted
 
     Then blood preasure category is <bp_category>
 
