@@ -36,6 +36,7 @@ COPY --from=builder $POETRY_HOME $POETRY_HOME
 COPY --from=builder $PYSETUP_PATH $PYSETUP_PATH
 
 RUN poetry install
+RUN playwright install
 WORKDIR /app
 
 EXPOSE 5000
