@@ -1,7 +1,7 @@
 from pytest_bdd import scenario, given, when, then, parsers
 
 
-@scenario('../features/bp_calculator.feature',
+@scenario('../../features/bp_calculator.feature',
           'Calculate blood preasure category')
 def test_calc():
     pass
@@ -14,12 +14,19 @@ def goto_calc(client):
 
 
 @when(parsers.parse("systolic is {systolic:d} and diastolic is {diastolic:d}"),
-      target_fixture="response")
-def bp_fill_values(client, systolic, diastolic):
-    response = client.post("/", data={
+      target_fixture="data")
+def bp_fill_values(systolic, diastolic):
+    data = {
         "bpsystolic": systolic,
         "bpdiastolic": diastolic
-    })
+    }
+    return data
+
+
+@when("form is submitted",
+      target_fixture="response")
+def submit(client, data):
+    response = client.post("/", data=data)
     return response
 
 
