@@ -1,5 +1,7 @@
 import os
 from flask import Flask, render_template, request, Response
+from flask_wtf.csrf import CSRFProtect
+from flask_talisman import Talisman
 from opentelemetry import trace
 from opentelemetry import metrics
 from bpcalc.bpenums import BPCategory, BPLimits
@@ -10,6 +12,8 @@ from bpcalc.bpplot import make_plot
 tracer = trace.get_tracer(__name__)
 meter = metrics.get_meter(__name__)
 app = Flask(__name__)
+CSRFProtect(app)
+Talisman(app)
 
 form_reponse_counter = meter.create_counter(
     "form_reponse_counter",
@@ -93,3 +97,9 @@ def utility_processor():
     return dict(
         env=env
     )
+
+
+@app.after_request
+def add_header(response):
+    response.cache_control.max_age = 300
+    return response
