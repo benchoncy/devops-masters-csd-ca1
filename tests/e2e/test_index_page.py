@@ -29,10 +29,12 @@ def submit(page: Page):
 @then(parsers.parse("blood preasure category is {bp_category}"))
 def bp_check_value(page: Page, bp_category):
     response = page.locator('#response')
-    expect(response).to_have_text(re.compile(bp_category))
+    regex = re.compile(bp_category)
+    expect(response).to_have_text(regex)
 
 
 @then(parsers.parse("error should list \"{error}\""))
 def bp_check_error(page: Page, error):
     alert = page.locator('#bpform .alert')
-    expect(alert).to_have_text(re.compile(error))
+    regex = re.compile(error)
+    expect(alert).to_have_text(regex)
