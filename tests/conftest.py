@@ -7,7 +7,7 @@ from playwright.sync_api import Page, expect
 @pytest.fixture(scope="session")
 def client():
     app.config.update({'TESTING': True})
-
+    app.config.update({'WTF_CSRF_ENABLED': False})
     with app.test_client() as client:
         yield client
 

@@ -12,8 +12,13 @@ from bpcalc.bpplot import make_plot
 tracer = trace.get_tracer(__name__)
 meter = metrics.get_meter(__name__)
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.urandom(32)
+
+csp = {
+    'default-src': '\'self\' cdn.jsdelivr.net'
+}
 CSRFProtect(app)
-Talisman(app)
+Talisman(app, force_https=False, content_security_policy=csp)
 
 form_reponse_counter = meter.create_counter(
     "form_reponse_counter",
