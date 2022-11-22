@@ -2,10 +2,6 @@
 name: CI/CD
 
 on:
-  push:
-    branches: ['main']
-    paths-ignore:
-      - '**/*.md'
   pull_request:
     branches: ['main']
     paths-ignore:
@@ -13,6 +9,10 @@ on:
     types:
       - synchronize
       - opened
+  push:
+    branches: ['*']
+    paths-ignore:
+      - '**/*.md'
 
 env:
   IMAGE_NAME: bpcalc
@@ -45,7 +45,7 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Lint
+      - name: Run linter
         run: poetry run flake8 .
       
       - name: Run Trivy vulnerability scanner (file system)
@@ -55,7 +55,7 @@ jobs:
           scan-ref: '.'
           security-checks: vuln,secret,config
 
-      - name: Unit tests
+      - name: Run unit tests
         run: |
           poetry run coverage run --source=bpcalc -m pytest tests/unit
           poetry run coverage report --fail-under=80
@@ -82,11 +82,11 @@ jobs:
           flavor: |
             latest=false
     
-      - name: Build & Publish
+      - name: Container image build
         id: build
         uses: docker/build-push-action@v3
         with:
-          push: true
+          push: ${{ (github.event_name == 'pull_request') || (github.ref_name == 'main') }}
           platforms: linux/amd64,linux/arm64
           context: .
           labels: ${{ steps.meta.outputs.labels }}
@@ -96,6 +96,7 @@ jobs:
 
   cd:
     name: Continous Deployment
+    if: (github.event_name == 'pull_request') || (github.ref_name == 'main')
     runs-on: ubuntu-22.04
     needs: ci
     outputs:
@@ -153,10 +154,18 @@ jobs:
           poetry install
           poetry run playwright install
       
-      - name: E2E tests
+      - name: Run E2E tests
         run: poetry run pytest --base-url ${{ needs.cd.outputs.url }} tests/e2e
       
-      - name: ZAP scan
+      - name: Run ZAP scan
         uses: zaproxy/action-baseline@v0.7.0
         with:
           target: '${{ needs.cd.outputs.url }}'
+          cmd_options: '-l WARN'
+      
+      - name: Run k6 local load test
+        uses: grafana/k6-action@v0.2.0
+        with:
+          filename: tests/load_test.js
+        env:
+          URL: ${{ needs.cd.outputs.url }}
