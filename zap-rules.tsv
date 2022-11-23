@@ -3,3 +3,4 @@
 10049	IGNORE	Cacheable Content
 10017	IGNORE	Cross-Domain JavaScript Source File Inclusion
 90003	IGNORE	Sub Resource Integrity Attribute Missing
+10015	IGNORE	Re-examine Cache-control Directives
