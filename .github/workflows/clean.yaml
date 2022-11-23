@@ -9,10 +9,11 @@ on:
     types:
       - closed
   workflow_dispatch:
-    workspace:
-      description: 'Terraform workspace'
-      required: true 
-      type: string
+    inputs:
+      workspace:
+        description: 'Terraform workspace'
+        required: true 
+        type: string
 
 env:
   IMAGE_NAME: bpcalc
