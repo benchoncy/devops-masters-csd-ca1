@@ -13,7 +13,7 @@ export const options = {
     ],
     thresholds: {
         http_req_failed: ['rate < 0.01'],
-        http_req_duration: ['avg < 100', 'p(90) < 200', 'p(95) < 300'], 
+        http_req_duration: ['avg < 200', 'p(90) < 400', 'p(95) < 600'], 
     },
 };
 
@@ -21,16 +21,12 @@ export default function () {
     const url = `${__ENV.URL}`;
     const systolic = getRandomNum(70, 190);
     const diastolic = getRandomNum(40, systolic);
-    const payload = JSON.stringify({
-        bpsystolic: systolic.toString(),
-        bpdiastolic: diastolic.toString(),
-    });
-    const params = {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-    };
-    http.get(url);
+    let res = http.get(url);
     sleep(1);
-    http.post(url, payload, params);
+    res = res.submitForm({
+        fields: {
+            bpsystolic: systolic.toString(),
+            bpdiastolic: diastolic.toString()
+        }
+    });
 };
