@@ -19,7 +19,7 @@ resource "aws_apprunner_service" "bpcalc" {
         runtime_environment_variables = {
           ENV = "${terraform.workspace}"
           VERSION = "${var.tag}"
-          FLASK_SECRET_KEY = "${random_string.secret_key}"
+          FLASK_SECRET_KEY = "${random_string.secret_key.result}"
           OTEL_PROPAGATORS = "xray"
           OTEL_PYTHON_ID_GENERATOR = "xray"
         }
