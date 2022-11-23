@@ -10,7 +10,7 @@ on:
       - synchronize
       - opened
   push:
-    branches: ['*']
+    branches: ['**']
     paths-ignore:
       - '**/*.md'
 
