@@ -1,3 +1,8 @@
+resource "random_string" "secret_key" {
+  length  = 16
+  special = false
+}
+
 resource "aws_apprunner_service" "bpcalc" {
   service_name = "bpcalc-app-${terraform.workspace}"
   depends_on = [time_sleep.wait]
@@ -14,6 +19,7 @@ resource "aws_apprunner_service" "bpcalc" {
         runtime_environment_variables = {
           ENV = "${terraform.workspace}"
           VERSION = "${var.tag}"
+          FLASK_SECRET_KEY = "${random_string.secret_key}"
           OTEL_PROPAGATORS = "xray"
           OTEL_PYTHON_ID_GENERATOR = "xray"
         }
