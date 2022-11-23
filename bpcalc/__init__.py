@@ -14,11 +14,20 @@ meter = metrics.get_meter(__name__)
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', os.urandom(12))
 
+permissions_policy = {
+    'geolocation': '()',
+    'microphone': '()'
+}
 csp = {
     'default-src': '\'self\' cdn.jsdelivr.net'
 }
 CSRFProtect(app)
-Talisman(app, force_https=False, content_security_policy=csp)
+Talisman(
+    app,
+    force_https=False,
+    content_security_policy=csp,
+    permissions_policy=permissions_policy
+)
 
 form_reponse_counter = meter.create_counter(
     "form_reponse_counter",

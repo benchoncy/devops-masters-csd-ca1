@@ -163,6 +163,7 @@ jobs:
           target: '${{ needs.cd.outputs.url }}'
           cmd_options: '-l WARN'
           fail_action: true
+          rules_file_name: 'zap-rules.tsv'
       
       - name: Run k6 local load test
         uses: grafana/k6-action@v0.2.0
