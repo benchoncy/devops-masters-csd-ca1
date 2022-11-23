@@ -15,6 +15,7 @@ on:
       type: string
 
 env:
+  IMAGE_NAME: bpcalc
   AWS_REGION: eu-west-1
   WORKSPACE: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || inputs.workspace }}
 
@@ -34,9 +35,14 @@ jobs:
       - name: Destroy Infrastructure
         id: destroy
         run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TAG=sha-$SHORT_SHA
           terraform init
           terraform workspace select ${{ env.WORKSPACE }}
-          terraform destroy -auto-approve
+          terraform destroy -auto-approve \
+          -var='image=${{ secrets.AWS_ACCOUNT }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.IMAGE_NAME }}' \
+          -var="tag=$TAG" \
+          -var='region=${{ env.AWS_REGION }}'
           terraform workspace select default
           terraform workspace delete ${{ env.WORKSPACE }}
         working-directory: ./infra
