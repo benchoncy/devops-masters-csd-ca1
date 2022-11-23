@@ -1,5 +1,5 @@
-10031   IGNORE  User Controllable HTML Element Attribute (Potential XSS)
-10055   IGNORE  CSP: Wildcard Directive
-10049   IGNORE  Cacheable Content
-10017   IGNORE  Cross-Domain JavaScript Source File Inclusion
-90003   IGNORE  Sub Resource Integrity Attribute Missing
+10031	IGNORE	User Controllable HTML Element Attribute (Potential XSS)
+10055	IGNORE	CSP: Wildcard Directive
+10049	IGNORE	Cacheable Content
+10017	IGNORE	Cross-Domain JavaScript Source File Inclusion
+90003	IGNORE	Sub Resource Integrity Attribute Missing
