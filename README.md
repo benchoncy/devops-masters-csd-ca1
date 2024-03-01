@@ -13,3 +13,5 @@ Run the container with development files mounted.
 ```
 docker run -it -p 5000:5000 --mount src="$(pwd)",target=/app,type=bind test
 ```
+
+> Note: This repo is part of a university assignment, assume all decisions made for experimentation and learning and not for long-term maintainability.
